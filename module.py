@@ -61,7 +61,7 @@ def tasks_to_file(tasks: dict) -> None:
             file.write(task_to_string(task, task_id) + '\n')
 
 
-def from_file_to_tasks() -> None:
+def from_file_to_tasks() -> dict:
     tasks = {}
     try:
         with open('tasks.txt', 'r') as file:
@@ -72,6 +72,8 @@ def from_file_to_tasks() -> None:
                         'priority': (task_info.split(', '))[2], 'status': (task_info.split(', '))[3]}
                 tasks[int(task_id)] = task
     except FileNotFoundError:
+        pass
+    finally:
         return tasks
 
 
