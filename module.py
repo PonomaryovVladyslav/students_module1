@@ -1,3 +1,57 @@
+LOW = "1"
+MEDIUM = "2"
+HIGH = "3"
+STATUS = {
+    LOW: "Low",
+    MEDIUM: "Medium",
+    HIGH: "High"
+}
+
+OPEN = "1"
+IN_PROGRESS = "2"
+CLOSED = "3"
+PRIORITY = {
+    OPEN: "Open",
+    IN_PROGRESS: "In Progress",
+    CLOSED: "Closed"
+}
+
+
+READ_GENERAL = "1"
+READ_STATUS = "2"
+READ_PRIORITY = "3"
+READ_SEARCH = "4"
+READ_MENU = {
+    READ_GENERAL: "Read as is",
+    READ_STATUS: "Read sorted by status",
+    READ_PRIORITY: "Read sorted by priority",
+    READ_SEARCH: "Read with search",
+}
+
+UPDATE_NAME = "1"
+UPDATE_DESCRIPTION = "2"
+UPDATE_PRIORITY = "3"
+UPDATE_STATUS = "4"
+UPDATE_MENU = {
+    UPDATE_NAME: "Update name",
+    UPDATE_DESCRIPTION: "Update description",
+    UPDATE_PRIORITY: "Update priority",
+    UPDATE_STATUS: "Update status"
+}
+
+NEW_TASK = "1"
+READ_TASKS = "2"
+UPDATE_TASK = "3"
+DELETE_TASK = "4"
+EXIT = "0"
+MAIN_MENU = {
+    NEW_TASK: "New task",
+    READ_TASKS: "Read tasks",
+    UPDATE_TASK: "Update task",
+    DELETE_TASK: "Delete task",
+    EXIT: "Exit"
+}
+
 def generate_id(tasks: dict) -> int:
     return max(tasks.keys()) + 1 if tasks else 1
 
