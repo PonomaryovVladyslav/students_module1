@@ -52,6 +52,14 @@ MAIN_MENU = {
 }
 
 
+def input_task() -> dict:
+    name = input("Enter task name: ")
+    description = input("Enter task description: ")
+    priority = input_process(PRIORITY)
+    status = input_process(STATUS)
+    return get_task(name, description, PRIORITY[priority], STATUS[status])
+
+
 def print_menu(menu: dict) -> None:
     print("Possible options:")
     for value, means in menu.items():
@@ -60,7 +68,6 @@ def print_menu(menu: dict) -> None:
 
 def validate_input(value: str, options: dict) -> None:
     if value not in options:
-        print(f"'{value}' is not a valid option")
         raise ValueError
 
 
@@ -76,21 +83,11 @@ def get_task(name: str, description: str, priority: str, status: str) -> dict:
     return {'name': name, 'description': description, 'priority': priority, 'status': status}
 
 
-def add_task(name: str, description: str, priority: str, status: str, tasks: dict) -> None:
-    validate_input(priority, PRIORITY)
-    validate_input(status, STATUS)
+def add_task(task: dict, tasks: dict) -> None:
     task_id = generate_id(tasks)
-    tasks[task_id] = get_task(name, description, priority, status)
+    tasks[task_id] = task
     tasks_to_file(tasks)
-
-
-def update_task(task_id: int, tasks: dict, to_update: dict) -> None:
-    if task_id in tasks:
-        tasks[task_id].update(to_update)
-        tasks_to_file(tasks)
-    else:
-        print(f'Task {task_id} not found')
-        raise ValueError
+    print('Task added')
 
 
 def delete_task(task_id: int, tasks: dict) -> None:
@@ -116,7 +113,7 @@ def ordering_tasks(tasks: dict, ordering) -> dict:
         raise ValueError
 
 
-def get_tasks(tasks: dict, ordering: str | None, search: str | None) -> list[str]:
+def get_tasks(tasks: dict, ordering: str | None = None, search: str | None = None) -> list[str]:
     if not ordering and not search:
         filtered_tasks = tasks
     elif not ordering and search:
@@ -150,8 +147,92 @@ def from_file_to_tasks() -> dict:
         return tasks
 
 
+def input_process(menu: dict) -> str:
+    while True:
+        print_menu(menu)
+        input_value = input("Please select an option: ")
+        try:
+            validate_input(input_value, menu)
+        except ValueError:
+            print(f"'{input_value}' is not a valid option")
+        else:
+            return input_value
+
+
+def print_tasks(tasks: list[str]) -> None:
+    for task in tasks:
+        print(task)
+
+
+def validate_task_id(task_id: int, tasks: dict) -> None:
+    if task_id not in tasks.keys():
+        raise ValueError
+
+
+def get_task_id(tasks: dict) -> int:
+    while True:
+        try:
+            task_id = int(input("Please type task id: "))
+        except ValueError:
+            print(f"value should be a number")
+            continue
+        try:
+            validate_task_id(task_id, tasks)
+        except ValueError:
+            print(f'Task {task_id} not found. Please try again.')
+        else:
+            return int(task_id)
+
+
+def update_task_by_field(field: str, task_id: int, tasks: dict) -> None:
+    if field == 'status':
+        value = STATUS[input_process(STATUS)]
+    elif field == 'priority':
+        value = PRIORITY[input_process(PRIORITY)]
+    else:
+        value = input("Input value:")
+    tasks[task_id][field] = value
+    print(f'Task {task_id} updated {field}: {value}')
+
+
+def run_main_process(tasks: dict) -> None:
+    while True:
+        menu_selection = input_process(MAIN_MENU)
+        if menu_selection == NEW_TASK:
+            task = input_task()
+            add_task(task, tasks)
+        elif menu_selection == READ_TASKS:
+            read_menu_selection = input_process(READ_MENU)
+            if read_menu_selection == READ_GENERAL:
+                print_tasks(get_tasks(tasks))
+            elif read_menu_selection == READ_STATUS:
+                print_tasks(get_tasks(tasks, ordering="status"))
+            elif read_menu_selection == READ_PRIORITY:
+                print_tasks(get_tasks(tasks, ordering="priority"))
+            elif read_menu_selection == READ_SEARCH:
+                search_value = input("Please enter a search string: ")
+                print_tasks(get_tasks(tasks, search=search_value))
+        elif menu_selection == UPDATE_TASK:
+            task_id = get_task_id(tasks)
+            update_menu_selection = input_process(UPDATE_MENU)
+            if update_menu_selection == UPDATE_NAME:
+                update_task_by_field('name', task_id, tasks)
+            elif update_menu_selection == UPDATE_DESCRIPTION:
+                update_task_by_field('description', task_id, tasks)
+            elif update_menu_selection == UPDATE_PRIORITY:
+                update_task_by_field('priority', task_id, tasks)
+            elif update_menu_selection == UPDATE_STATUS:
+                update_task_by_field('status', task_id, tasks)
+        elif menu_selection == DELETE_TASK:
+            task_id = get_task_id(tasks)
+            delete_task(task_id, tasks)
+        elif menu_selection == EXIT:
+            break
+
+
 def main():
     all_tasks = from_file_to_tasks()
+    run_main_process(all_tasks)
 
 
 main()
