@@ -51,6 +51,8 @@ MAIN_MENU = {
     EXIT: "Exit"
 }
 
+FILE_NAME = 'tasks.txt'
+
 
 def input_task() -> dict:
     name = input("Enter task name: ")
@@ -126,7 +128,7 @@ def get_tasks(tasks: dict, ordering: str | None = None, search: str | None = Non
 
 
 def tasks_to_file(tasks: dict) -> None:
-    with open('tasks.txt', 'w') as file:
+    with open(FILE_NAME, 'w') as file:
         for task_id, task in tasks.items():
             file.write(task_to_string(task, task_id) + '\n')
 
@@ -134,7 +136,7 @@ def tasks_to_file(tasks: dict) -> None:
 def from_file_to_tasks() -> dict:
     tasks = {}
     try:
-        with open('tasks.txt', 'r') as file:
+        with open(FILE_NAME, 'r') as file:
             lines = file.readlines()
             for line in lines:
                 task_id, task_info = line.strip().split(': ')
