@@ -108,9 +108,9 @@ def search_tasks(tasks: dict, search) -> dict:
 
 def ordering_tasks(tasks: dict, ordering) -> dict:
     if ordering == 'priority':
-        return dict(sorted(tasks.items(), key=lambda x: x[1]['priority']))
+        return dict(sorted(tasks.items(), key=lambda x: list(PRIORITY.values()).index(x[1].get(ordering, ''))))
     elif ordering == 'status':
-        return dict(sorted(tasks.items(), key=lambda x: x[1]['status']))
+        return dict(sorted(tasks.items(), key=lambda x: list(STATUS.values()).index(x[1].get(ordering, ''))))
     else:
         raise ValueError
 
