@@ -140,9 +140,7 @@ def from_file_to_tasks() -> dict:
             lines = file.readlines()
             for line in lines:
                 task_id, task_info = line.strip().split(': ')
-                task = {'name': (task_info.split(', '))[0], 'description': (task_info.split(', '))[1],
-                        'priority': (task_info.split(', '))[2], 'status': (task_info.split(', '))[3]}
-                tasks[int(task_id)] = task
+                tasks[int(task_id)] = get_task(*task_info.split(', '))
     except FileNotFoundError:
         pass
     finally:
